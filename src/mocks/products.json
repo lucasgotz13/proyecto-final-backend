@@ -1,0 +1,31 @@
+[
+    {
+        "id": "9076fc23-b1b2-4491-a903-0563ac08f3fe",
+        "title": "Papa",
+        "description": "Muy rico",
+        "price": 1500,
+        "thumbnail": [],
+        "code": "B123",
+        "stock": 30
+    },
+    {
+        "id": "f6e48eff-0ca3-475b-96fc-5fe55edee9d5",
+        "title": "Leche",
+        "description": "Muy rico",
+        "price": 1500,
+        "thumbnail": [],
+        "code": "L123",
+        "status": true,
+        "stock": 30
+    },
+    {
+        "id": "14682e06-9439-4938-85b1-9c5c96cf42bb",
+        "title": "Pollo",
+        "description": "Muy rico",
+        "price": 1500,
+        "thumbnail": [],
+        "code": "P123",
+        "status": false,
+        "stock": 30
+    }
+]
