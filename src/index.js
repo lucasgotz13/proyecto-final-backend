@@ -4,10 +4,6 @@ import { __dirname } from "./path.js";
 import path from "path";
 import routerCart from "./routes/cart.routes.js";
 
-/**
- *
- */
-
 const PORT = 8080;
 const app = express();
 
