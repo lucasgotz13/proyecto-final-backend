@@ -5,21 +5,37 @@ export default class CartManager {
     constructor(path) {
         this.path = path;
         this.products = [];
+        this.cart = [];
     }
 
     async createCart() {
-        let newCart = {
-            id: crypto.randomUUID(),
-            products: [],
-        };
-        await fs.writeFile(this.path, JSON.stringify(newCart));
+        try {
+            let res = await fs.readFile(this.path, "utf-8");
+            let currCart = JSON.parse(res);
+            console.log(currCart);
+            let newCart = {
+                id: crypto.randomUUID(),
+                products: [],
+            };
+            currCart.push(newCart);
+            console.log(currCart);
+            await fs.writeFile(this.path, JSON.stringify(currCart));
+        } catch (err) {
+            let newCart = {
+                id: crypto.randomUUID(),
+                products: [],
+            };
+            this.cart.push(newCart);
+            await fs.writeFile(this.path, JSON.stringify(this.cart));
+        }
         return true;
     }
 
-    async getCart() {
+    async getCart(cartId = false) {
         try {
             let res = await fs.readFile(this.path, "utf-8");
-            let data = JSON.parse(res);
+            if (!cartId) return JSON.parse(res);
+            let data = JSON.parse(res).find((cart) => cart.id === cartId);
             return data;
         } catch (err) {
             console.log("Cart not found", err);
@@ -27,42 +43,39 @@ export default class CartManager {
         }
     }
 
-    async getCartProducts() {
-        try {
-            let res = await fs.readFile(this.path, "utf-8");
-            let data = JSON.parse(res);
-            return data.products;
-        } catch (err) {
-            console.log("Cart not found", err);
-            return false;
-        }
+    async getCartProducts(cartId) {
+        const { products } = await this.getCart(cartId);
+        return products ?? "Cart not found";
     }
 
-    async addProductToCart(id) {
-        let products = await this.getCartProducts();
-        let cart = await this.getCart();
-        if (!products.some((prod) => prod.product === id)) {
+    async addProductToCart(cartId, prodId) {
+        let selectedCart = await this.getCart(cartId);
+        let carts = await this.getCart();
+        if (!selectedCart.products.some((prod) => prod.product === prodId)) {
             let prod = {
-                product: id,
+                product: prodId,
                 quantity: 1,
             };
-            products.push(prod);
-            cart.products = products;
-            await fs.writeFile(this.path, JSON.stringify(cart));
-            console.log("test");
+            selectedCart.products.push(prod);
+            let newCart = carts.filter((cart) => cart.id !== cartId);
+            let updatedCart = [...newCart, selectedCart];
+            await fs.writeFile(this.path, JSON.stringify(updatedCart));
             return true;
         } else {
-            let currProd = products.find((prod) => prod.product === id);
+            let currProd = selectedCart.products.find(
+                (prod) => prod.product === prodId
+            );
             currProd.quantity++;
-            let newProdInCart = products.filter((prod) => prod.product !== id);
+            let newProdInCart = selectedCart.products.filter(
+                (prod) => prod.product !== prodId
+            );
             newProdInCart.push(currProd);
-            let updatedCart = {
-                id: cart.id,
-                products: newProdInCart,
-            };
-            console.log(updatedCart);
-            await fs.writeFile(this.path, JSON.stringify(updatedCart));
-            return false;
+            selectedCart.products = newProdInCart;
+            let newCart = carts.filter((cart) => cart.id !== cartId);
+            await fs.writeFile(
+                this.path,
+                JSON.stringify([...newCart, selectedCart])
+            );
         }
     }
 }
