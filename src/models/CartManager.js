@@ -49,7 +49,6 @@ export default class CartManager {
             products.push(prod);
             cart.products = products;
             await fs.writeFile(this.path, JSON.stringify(cart));
-            console.log("test");
             return true;
         } else {
             let currProd = products.find((prod) => prod.product === id);
