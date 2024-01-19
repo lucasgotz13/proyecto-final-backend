@@ -8,10 +8,12 @@ export default class CartManager {
     }
 
     async createCart() {
-        let newCart = {
-            id: crypto.randomUUID(),
-            products: [],
-        };
+        let newCart = [
+            {
+                id: crypto.randomUUID(),
+                products: [],
+            },
+        ];
         await fs.writeFile(this.path, JSON.stringify(newCart));
         return true;
     }
@@ -29,9 +31,8 @@ export default class CartManager {
 
     async getCartProducts() {
         try {
-            let res = await fs.readFile(this.path, "utf-8");
-            let data = JSON.parse(res);
-            return data.products;
+            let data = await this.getCart();
+            return data[0].products;
         } catch (err) {
             console.log("Cart not found", err);
             return false;
@@ -47,7 +48,7 @@ export default class CartManager {
                 quantity: 1,
             };
             products.push(prod);
-            cart.products = products;
+            cart[0].products = products;
             await fs.writeFile(this.path, JSON.stringify(cart));
             return true;
         } else {
@@ -55,10 +56,12 @@ export default class CartManager {
             currProd.quantity++;
             let newProdInCart = products.filter((prod) => prod.product !== id);
             newProdInCart.push(currProd);
-            let updatedCart = {
-                id: cart.id,
-                products: newProdInCart,
-            };
+            let updatedCart = [
+                {
+                    id: cart[0].id,
+                    products: newProdInCart,
+                },
+            ];
             console.log(updatedCart);
             await fs.writeFile(this.path, JSON.stringify(updatedCart));
             return false;

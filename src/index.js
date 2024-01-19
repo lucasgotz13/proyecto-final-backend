@@ -4,6 +4,12 @@ import { __dirname } from "./path.js";
 import path from "path";
 import routerCart from "./routes/cart.routes.js";
 
+/**
+ * ! Tema ruta src: Dice que deberia borrar el /src del path pero al hacerlo se rompe el programa (?)
+ * ! Tema JSON.parse roto: A mi no me pasa
+ * ! Tema falta implementar ruta q guarda los productos dentro del carrito: Estaria implementada pero no la vio (?)
+ */
+
 const PORT = 8080;
 const app = express();
 
