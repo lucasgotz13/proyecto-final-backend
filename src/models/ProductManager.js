@@ -2,8 +2,8 @@ import { promises as fs } from "fs";
 import crypto from "crypto";
 
 export default class ProductManager {
-    constructor() {
-        this.path = "./src/mocks/products.json";
+    constructor(path) {
+        this.path = path;
         this.products = [];
     }
 

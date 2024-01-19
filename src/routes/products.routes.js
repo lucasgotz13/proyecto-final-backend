@@ -1,8 +1,11 @@
 import { Router } from "express";
 import ProductManager from "../models/ProductManager.js";
+import { __dirname } from "../path.js";
+import { join } from "path";
 
+const PATH = join(__dirname, "mocks", "products.json");
 const routerProd = Router();
-const productManager = new ProductManager();
+const productManager = new ProductManager(PATH);
 
 routerProd.get("/", async (req, res) => {
     const { limit } = req.query;

@@ -1,8 +1,12 @@
 import { Router } from "express";
 import CartManager from "../models/CartManager.js";
+import { __dirname } from "../path.js";
+import { join } from "path";
+
+const PATH = join(__dirname, "mocks", "cart.json");
 
 const routerCart = Router();
-const cartManager = new CartManager("./src/mocks/cart.json");
+const cartManager = new CartManager(PATH);
 
 routerCart.post("/", async (req, res) => {
     const conf = await cartManager.createCart();
@@ -16,6 +20,7 @@ routerCart.post("/", async (req, res) => {
 });
 
 routerCart.get("/", async (req, res) => {
+    console.log(__dirname);
     const products = await cartManager.getCartProducts();
     return res.status(200).send(products);
 });
