@@ -19,15 +19,16 @@ routerCart.post("/", async (req, res) => {
     }
 });
 
-routerCart.get("/", async (req, res) => {
-    console.log(__dirname);
-    const products = await cartManager.getCartProducts();
+routerCart.get("/:cid", async (req, res) => {
+    const { cid } = req.params;
+    const products = await cartManager.getCartProductsById(cid);
+    if (products === false) return res.status(404).send("El carrito no existe");
     return res.status(200).send(products);
 });
 
-routerCart.post("/product/:pid", async (req, res) => {
-    const { pid } = req.params;
-    const conf = await cartManager.addProductToCart(pid);
+routerCart.post("/:cid/product/:pid", async (req, res) => {
+    const { cid, pid } = req.params;
+    const conf = await cartManager.addProductToCart(cid, pid);
     if (conf) {
         return res.status(200).send("Nuevo producto agregado al carrito");
     } else {

@@ -8,13 +8,19 @@ export default class CartManager {
     }
 
     async createCart() {
-        let newCart = [
-            {
-                id: crypto.randomUUID(),
-                products: [],
-            },
-        ];
-        await fs.writeFile(this.path, JSON.stringify(newCart));
+        let newCart = {
+            id: crypto.randomUUID(),
+            products: [],
+        };
+        try {
+            const cart = await this.getCart();
+            cart.push(newCart);
+            await fs.writeFile(this.path, JSON.stringify(cart));
+        } catch (err) {
+            let cart = [];
+            cart.push(newCart);
+            await fs.writeFile(this.path, JSON.stringify(cart));
+        }
         return true;
     }
 
@@ -29,9 +35,21 @@ export default class CartManager {
         }
     }
 
-    async getCartProducts() {
+    async getCartProductsById(id) {
         try {
-            let data = await this.getCart();
+            const data = await this.getCart();
+            const cart = data.find((cart) => cart.id === id);
+            return (
+                cart.products ?? "The cart with the following id does not exist"
+            );
+        } catch (err) {
+            console.log("El carrito no fue encontrado\n", err);
+        }
+    }
+
+    async getCartProducts(id) {
+        try {
+            let data = await this.getCart(id);
             return data[0].products;
         } catch (err) {
             console.log("Cart not found", err);
@@ -39,30 +57,31 @@ export default class CartManager {
         }
     }
 
-    async addProductToCart(id) {
-        let products = await this.getCartProducts();
-        let cart = await this.getCart();
-        if (!products.some((prod) => prod.product === id)) {
+    async addProductToCart(cid, pid) {
+        let products = await this.getCartProductsById(cid);
+        const cart = await this.getCart();
+        let selectedCart = cart.find((cart) => cart.id === cid);
+        if (!products.some((prod) => prod.product === pid)) {
             let prod = {
-                product: id,
+                product: pid,
                 quantity: 1,
             };
             products.push(prod);
-            cart[0].products = products;
-            await fs.writeFile(this.path, JSON.stringify(cart));
+            selectedCart.products = products;
+            let updatedCart = cart.filter((cart) => cart.id !== cid);
+            updatedCart.push(selectedCart);
+            console.log(updatedCart);
+            await fs.writeFile(this.path, JSON.stringify(updatedCart));
             return true;
         } else {
-            let currProd = products.find((prod) => prod.product === id);
+            let currProd = products.find((prod) => prod.product === pid);
             currProd.quantity++;
-            let newProdInCart = products.filter((prod) => prod.product !== id);
+            let newProdInCart = products.filter((prod) => prod.product !== pid);
             newProdInCart.push(currProd);
-            let updatedCart = [
-                {
-                    id: cart[0].id,
-                    products: newProdInCart,
-                },
-            ];
-            console.log(updatedCart);
+            selectedCart.products = newProdInCart;
+            let updatedCart = cart.filter((cart) => cart.id !== cid);
+            updatedCart.push(selectedCart);
+            // console.log(updatedCart);
             await fs.writeFile(this.path, JSON.stringify(updatedCart));
             return false;
         }
