@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/products", routerProd);
-app.use("/api/cart", routerCart);
+app.use("/api/carts", routerCart);
 app.use("/static", express.static(path.join(__dirname, "/public")));
 
 app.listen(PORT, () => {
