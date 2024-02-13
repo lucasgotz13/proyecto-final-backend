@@ -1,38 +1,25 @@
 import { Router } from "express";
-import { cartModel } from "../Dao/MongoDB/models/carts.model.js";
+import CartManager from "../Dao/MongoDB/managers/CartManager.js";
 
 const routerCart = Router();
+const cartManager = new CartManager();
 
 routerCart.get("/:cid", async (req, res) => {
     const { cid } = req.params;
-    try {
-        let cart = await cartModel.findOne({ _id: cid });
-        res.send({ result: "success", payload: cart });
-    } catch (error) {
-        console.log("Cannot get carts with mongoose" + error);
-    }
+    let result = await cartManager.getCart(cid);
+    res.status(200).send({ status: "success", payload: result });
 });
 
 routerCart.post("/", async (req, res) => {
     let { products } = req.body;
-
-    let result = await cartModel.create({
-        products,
-    });
-    res.send({ status: "success", payload: result });
+    let result = await cartManager.createCart(products ?? []);
+    res.status(201).send({ status: "success", payload: result });
 });
 
 routerCart.post("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
-    try {
-        let cart = await cartModel.findOne({ _id: cid });
-        // TODO: Hacer la lógica para que si existe el producto entonces solo aumentar la cantidad de este
-        cart.products.push({ product: pid, quantity: 1 });
-        let result = await cartModel.updateOne({ _id: cid }, cart);
-        res.send({ result: "success", payload: result });
-    } catch (error) {
-        console.log("Cannot get carts with mongoose" + error);
-    }
+    let result = await cartManager.addProductToCart(cid, pid);
+    res.status(201).send({ status: "success", payload: result });
 });
 
 export default routerCart;
