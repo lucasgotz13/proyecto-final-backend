@@ -1,0 +1,17 @@
+#caja {
+    padding: 20px;
+    height: 50vh;
+    overflow-y: scroll;
+}
+
+.formulario {
+    padding: 20px;
+}
+
+.formulario > input {
+    width: 50vw;
+}
+
+.formulario > button {
+    margin-top: 10px;
+}

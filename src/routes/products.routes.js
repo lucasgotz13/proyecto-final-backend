@@ -1,17 +1,19 @@
 import { Router } from "express";
-import ProductManager from "../Dao/MongoDB/managers/ProductManager.js";
+import ProductManager from "../Dao/MongoDB/controllers/ProductManager.js";
 
 const routerProd = Router();
 const productManager = new ProductManager();
 
 routerProd.get("/", async (req, res) => {
     let result = await productManager.getProducts();
+    if (!result) return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
 });
 
 routerProd.get("/:pid", async (req, res) => {
     const { pid } = req.params;
     let result = await productManager.getProductById(pid);
+    if (!result) return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
 });
 
@@ -40,12 +42,14 @@ routerProd.put("/:pid", async (req, res) => {
     let fieldsToReplace = req.body;
 
     let result = await productManager.updateProduct(pid, fieldsToReplace);
+    if (!result) return res.status(404).send({ status: "error" });
     res.status(201).send({ status: "success", payload: result });
 });
 
 routerProd.delete("/:pid", async (req, res) => {
     const { pid } = req.params;
     let result = await productManager.deleteProduct(pid);
+    if (!result) return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
 });
 

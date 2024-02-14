@@ -7,10 +7,15 @@ export default class CartManager {
     }
 
     async createCart(products) {
-        let result = await cartModel.create({
-            products,
-        });
-        return result;
+        try {
+            let result = await cartModel.create({
+                products,
+            });
+            return result;
+        } catch (error) {
+            console.log("An error has occured: ", error);
+            return false;
+        }
     }
 
     async getCart(id) {
@@ -19,6 +24,7 @@ export default class CartManager {
             return cart.products;
         } catch (err) {
             console.log("Cart not found: ", err);
+            return false;
         }
     }
 
@@ -39,6 +45,7 @@ export default class CartManager {
             }
         } catch (err) {
             console.log("Cannot get cart: ", err);
+            return false;
         }
     }
 }

@@ -28,6 +28,7 @@ export default class ProductManager {
             return result;
         } catch (error) {
             console.log("An error has occured: ", err);
+            return false;
         }
     }
 
@@ -37,6 +38,7 @@ export default class ProductManager {
             return result;
         } catch (error) {
             console.log("Products do not exist: ", error);
+            return false;
         }
     }
 
@@ -46,6 +48,7 @@ export default class ProductManager {
             return result;
         } catch (error) {
             console.log("Product does not exist: ", error);
+            return false;
         }
     }
 
@@ -58,6 +61,7 @@ export default class ProductManager {
             return result;
         } catch (error) {
             console.log("An error has occured: ", error);
+            return false;
         }
     }
 
@@ -70,6 +74,7 @@ export default class ProductManager {
                 "An error has occured when deleting a product document: ",
                 err
             );
+            return false;
         }
     }
 }

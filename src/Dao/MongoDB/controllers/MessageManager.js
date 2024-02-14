@@ -7,6 +7,7 @@ export default class MessagesManager {
             return result;
         } catch (error) {
             console.log("An error has occured: ", error);
+            return false;
         }
     }
     async postMessage(user, message) {
@@ -18,6 +19,7 @@ export default class MessagesManager {
             return result;
         } catch (error) {
             console.log("An error has occured: ", error);
+            return false;
         }
     }
 }
