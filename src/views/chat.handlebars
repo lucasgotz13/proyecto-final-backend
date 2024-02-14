@@ -1,0 +1,21 @@
+<h1>Chat</h1>
+<div id="caja"></div>
+<form class="formulario" onsubmit="return addMessage()">
+    <label for="user" class="form-label">User</label>
+    <input
+        type="text"
+        class="form-control"
+        id="user"
+        aria-describedby="emailHelp"
+    />
+    <label for="message" class="form-label">Message</label>
+    <input
+        type="text"
+        class="form-control"
+        id="message"
+        aria-describedby="emailHelp"
+    />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

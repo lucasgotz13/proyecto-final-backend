@@ -1,39 +1,35 @@
 import { Router } from "express";
-import CartManager from "../models/CartManager.js";
-import { __dirname } from "../path.js";
-import { join } from "path";
-
-const PATH = join(__dirname, "mocks", "cart.json");
+import CartManager from "../Dao/MongoDB/controllers/CartManager.js";
 
 const routerCart = Router();
-const cartManager = new CartManager(PATH);
+const cartManager = new CartManager();
 
-routerCart.post("/", async (req, res) => {
-    const conf = await cartManager.createCart();
-    if (conf) {
-        res.status(201).send("Carrito creado");
-    } else {
-        res.status(404).send(
-            "Ha ocurrido un error con la creacion del carrito"
-        );
-    }
+routerCart.get("/", (req, res) => {
+    res.status(404).send({ status: "error", description: "No cart id found" });
 });
 
 routerCart.get("/:cid", async (req, res) => {
     const { cid } = req.params;
-    const products = await cartManager.getCartProductsById(cid);
-    if (products === false) return res.status(404).send("El carrito no existe");
-    return res.status(200).send(products);
+    let result = await cartManager.getCart(cid);
+    if (!result)
+        return res
+            .status(404)
+            .send({ status: "error", description: "Invalid cart id" });
+    res.status(200).send({ status: "success", payload: result });
+});
+
+routerCart.post("/", async (req, res) => {
+    let { products } = req.body;
+    let result = await cartManager.createCart(products ?? []);
+    if (!result) return res.status(404).send({ status: "error" });
+    res.status(201).send({ status: "success", payload: result });
 });
 
 routerCart.post("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
-    const conf = await cartManager.addProductToCart(cid, pid);
-    if (conf) {
-        return res.status(200).send("Nuevo producto agregado al carrito");
-    } else {
-        return res.status(200).send("Producto agregado");
-    }
+    let result = await cartManager.addProductToCart(cid, pid);
+    if (!result) return res.status(404).send({ status: "error" });
+    res.status(201).send({ status: "success", payload: result });
 });
 
 export default routerCart;
