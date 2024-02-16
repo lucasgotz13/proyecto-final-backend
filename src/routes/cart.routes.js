@@ -4,10 +4,6 @@ import CartManager from "../Dao/MongoDB/controllers/CartManager.js";
 const routerCart = Router();
 const cartManager = new CartManager();
 
-routerCart.get("/", (req, res) => {
-    res.status(404).send({ status: "error", description: "No cart id found" });
-});
-
 routerCart.get("/:cid", async (req, res) => {
     const { cid } = req.params;
     let result = await cartManager.getCart(cid);

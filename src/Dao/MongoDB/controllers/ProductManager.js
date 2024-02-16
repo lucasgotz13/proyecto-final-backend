@@ -32,10 +32,15 @@ export default class ProductManager {
         }
     }
 
-    async getProducts() {
+    async getProducts(limit) {
         try {
-            let result = await productModel.find();
-            return result;
+            if (limit === undefined) {
+                let result = await productModel.find();
+                return result;
+            } else {
+                let result = await productModel.find().limit(limit);
+                return result;
+            }
         } catch (error) {
             console.log("Products do not exist: ", error);
             return false;

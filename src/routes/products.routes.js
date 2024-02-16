@@ -5,7 +5,8 @@ const routerProd = Router();
 const productManager = new ProductManager();
 
 routerProd.get("/", async (req, res) => {
-    let result = await productManager.getProducts();
+    const { limit } = req.query;
+    let result = await productManager.getProducts(limit);
     if (!result) return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
 });
