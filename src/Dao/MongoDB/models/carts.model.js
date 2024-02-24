@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const cartCollection = "carts";
 
-const productSchema = new mongoose.Schema({
-    product: String,
-    quantity: Number,
-});
-
 const cartSchema = new mongoose.Schema({
-    products: [productSchema],
+    products: [
+        {
+            product: String,
+            quantity: Number,
+        },
+    ],
 });
 
 export const cartModel = mongoose.model(cartCollection, cartSchema);

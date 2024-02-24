@@ -1,6 +1,5 @@
 import express from "express";
 import { __dirname } from "./path.js";
-import path from "path";
 import routerCart from "./routes/cart.routes.js";
 import routerMessages from "./routes/messages.routes.js";
 import routerProd from "./routes/products.routes.js";

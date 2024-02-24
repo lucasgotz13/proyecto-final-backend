@@ -4,6 +4,7 @@ export default class ProductManager {
     async addProduct({
         title,
         description,
+        category,
         price,
         thumbnail,
         code,
@@ -19,6 +20,7 @@ export default class ProductManager {
             let result = await productModel.create({
                 title,
                 description,
+                category,
                 price,
                 thumbnail,
                 code,
@@ -32,17 +34,30 @@ export default class ProductManager {
         }
     }
 
-    async getProducts(limit) {
+    validateParams(limit, query, sort) {
+        let finalQuery = [];
+        if (Boolean(query)) {
+            finalQuery.push({ $match: { category: query } });
+        }
+        if (Boolean(sort)) {
+            finalQuery.push({
+                $sort: { price: sort === "asc" ? 1 : -1 },
+            });
+        }
+        finalQuery.push({
+            $limit: limit ? parseInt(limit) : 10,
+        });
+        return finalQuery;
+    }
+
+    async getProducts(limit, query, sort) {
+        let finalQuery = this.validateParams(limit, query, sort);
+        console.log(finalQuery);
         try {
-            if (limit === undefined) {
-                let result = await productModel.find();
-                return result;
-            } else {
-                let result = await productModel.find().limit(limit);
-                return result;
-            }
+            let result = await productModel.aggregate(finalQuery);
+            return result;
         } catch (error) {
-            console.log("Products do not exist: ", error);
+            console.log("products do not exist: ", error);
             return false;
         }
     }
