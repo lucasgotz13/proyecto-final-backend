@@ -34,28 +34,50 @@ export default class ProductManager {
         }
     }
 
-    validateParams(limit, query, sort) {
-        let finalQuery = [];
+    validateParams(limit, page, query, sort) {
+        // let finalQuery = [];
+        // if (Boolean(query)) {
+        //     finalQuery.push({ $match: { category: query } });
+        // }
+        // if (Boolean(sort)) {
+        //     finalQuery.push({
+        //         $sort: { price: sort === "asc" ? 1 : -1 },
+        //     });
+        // }
+        // finalQuery.push({
+        //     $limit: limit ? parseInt(limit) : 10,
+        // });
+        let filter = {};
         if (Boolean(query)) {
-            finalQuery.push({ $match: { category: query } });
+            if (query !== "status-true" && query !== "status-false") {
+                console.log("la concha de tu mdare");
+                filter.category = query;
+            } else {
+                filter.status = query === "status-true" ? true : false;
+            }
         }
+        console.log(filter);
+        let finalQuery = {};
         if (Boolean(sort)) {
-            finalQuery.push({
-                $sort: { price: sort === "asc" ? 1 : -1 },
-            });
+            finalQuery.sort = { price: sort === "asc" ? 1 : -1 };
         }
-        finalQuery.push({
-            $limit: limit ? parseInt(limit) : 10,
-        });
-        return finalQuery;
+        finalQuery.limit = limit ? parseInt(limit) : 10;
+        finalQuery.page = page ? parseInt(page) : 1;
+        console.log(finalQuery);
+        return { finalQuery, filter };
     }
 
-    async getProducts(limit, query, sort) {
-        let finalQuery = this.validateParams(limit, query, sort);
-        console.log(finalQuery);
+    async getProducts(limit, page, query, sort) {
+        let { finalQuery, filter } = this.validateParams(
+            limit,
+            page,
+            query,
+            sort
+        );
         try {
-            let result = await productModel.aggregate(finalQuery);
-            return result;
+            // let result = await productModel.aggregate(finalQuery);
+            let test = await productModel.paginate(filter, finalQuery);
+            return test;
         } catch (error) {
             console.log("products do not exist: ", error);
             return false;
