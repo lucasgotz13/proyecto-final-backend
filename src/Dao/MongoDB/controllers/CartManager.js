@@ -20,7 +20,7 @@ export default class CartManager {
 
     async getCart(id) {
         try {
-            let cart = await cartModel.findOne({ _id: id });
+            let cart = await cartModel.findOne({ _id: id }).lean();
             return cart.products;
         } catch (err) {
             console.log("Cart not found: ", err);

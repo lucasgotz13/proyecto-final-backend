@@ -1,0 +1,15 @@
+<h1 style="text-align: center;">CART</h1>
+<div>
+    {{#each cart}}
+        <ul
+            style="display: flex; list-style: none; flex-direction: column; border-bottom: 2px solid black;"
+        >
+            <li><strong>Name:</strong> {{this.product.title}}</li>
+            <li><strong>Description:</strong> {{this.product.description}}</li>
+            <li><strong>Category:</strong> {{this.product.category}}</li>
+            <li><strong>Price:</strong> {{this.product.price}}</li>
+            <li><strong>Stock:</strong> {{this.product.stock}}</li>
+            <li><strong>Code:</strong> {{this.product.code}}</li>
+        </ul>
+    {{/each}}
+</div>

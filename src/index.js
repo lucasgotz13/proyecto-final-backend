@@ -10,6 +10,7 @@ import { Server } from "socket.io";
 import routerChat from "./routes/chat.routes.js";
 import { messageModel } from "./Dao/MongoDB/models/messages.model.js";
 import ProductManager from "./Dao/MongoDB/controllers/ProductManager.js";
+import CartManager from "./Dao/MongoDB/controllers/CartManager.js";
 
 const PORT = 8080;
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/messages", routerMessages);
 app.use("/chat", routerChat);
 
 const productManager = new ProductManager();
+const cartManager = new CartManager();
 
 app.get("/products", async (req, res) => {
     const { limit, page, query, sort } = req.query;
@@ -61,6 +63,12 @@ app.get("/products", async (req, res) => {
     const { prevLink, nextLink } = result;
     console.log(prevLink, nextLink);
     res.render("products", { PRODUCTS, prevLink, nextLink });
+});
+
+app.get("/carts/:cid", async (req, res) => {
+    const { cid } = req.params;
+    let cart = await cartManager.getCart(cid);
+    res.render("cart", { cart });
 });
 
 app.use(express.static(__dirname + "/public"));
