@@ -34,7 +34,7 @@ export default class ProductManager {
         }
     }
 
-    validateParams(limit, page, query, sort) {
+    validateParams(limit, page, query, sort, lean) {
         // let finalQuery = [];
         // if (Boolean(query)) {
         //     finalQuery.push({ $match: { category: query } });
@@ -63,16 +63,20 @@ export default class ProductManager {
         }
         finalQuery.limit = limit ? parseInt(limit) : 10;
         finalQuery.page = page ? parseInt(page) : 1;
+        if (lean) {
+            finalQuery.lean = true;
+        }
         console.log(finalQuery);
         return { finalQuery, filter };
     }
 
-    async getProducts(limit, page, query, sort) {
+    async getProducts(limit, page, query, sort, lean) {
         let { finalQuery, filter } = this.validateParams(
             limit,
             page,
             query,
-            sort
+            sort,
+            lean
         );
         try {
             // let result = await productModel.aggregate(finalQuery);
