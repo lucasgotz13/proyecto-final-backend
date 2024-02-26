@@ -20,7 +20,7 @@ export default class CartManager {
 
     async getCart(id) {
         try {
-            let cart = await cartModel.findOne({ _id: id }).lean();
+            let cart = await cartModel.findOne({ _id: id });
             return cart.products;
         } catch (err) {
             console.log("Cart not found: ", err);
@@ -31,18 +31,84 @@ export default class CartManager {
     async addProductToCart(cid, pid) {
         try {
             let cart = await cartModel.findOne({ _id: cid }).lean();
-            if (cart.products.some((item) => item.product === pid)) {
+            console.log(cart);
+            if (cart.products.some((item) => item.product.toString() === pid)) {
                 let currProd = cart.products.find(
-                    (item) => item.product === pid
+                    (item) => item.product.toString() === pid
                 );
-                currProd.quantity++;
-                let result = await cartModel.updateOne({ _id: cid }, cart);
+                let quantity = currProd.quantity;
+                quantity += 1;
+                console.log(quantity);
+                let result = await cartModel.updateOne(
+                    { _id: cid, "products.product": pid },
+                    {
+                        $set: { "products.$.quantity": quantity },
+                    }
+                );
                 return result;
             } else {
-                cart.products.push({ product: pid, quantity: 1 });
-                let result = await cartModel.updateOne({ _id: cid }, cart);
+                let result = await cartModel.updateOne(
+                    { _id: cid },
+                    {
+                        $push: { products: { product: pid, quantity: 1 } },
+                    }
+                );
                 return result;
             }
+        } catch (err) {
+            console.log("Cannot get cart: ", err);
+            return false;
+        }
+    }
+
+    async updateCart(cid, updatedProducts) {
+        try {
+            let result = await cartModel.updateOne(
+                { _id: cid },
+                { $set: { products: updatedProducts } }
+            );
+            return result;
+        } catch (err) {
+            console.log("Cannot get cart or product: ", err);
+            return false;
+        }
+    }
+
+    async updateProductFromCart(cid, pid, quantity) {
+        try {
+            let result = await cartModel.updateOne(
+                { _id: cid, "products.product": pid },
+                {
+                    $set: { "products.$.quantity": quantity },
+                }
+            );
+            return result;
+        } catch (err) {
+            console.log("Cannot get cart or product: ", err);
+            return false;
+        }
+    }
+
+    async deleteProductFromCart(cid, pid) {
+        try {
+            let result = await cartModel.updateOne(
+                { _id: cid },
+                { $pull: { products: { product: pid } } }
+            );
+            return result;
+        } catch (err) {
+            console.log("Cannot get cart or product: ", err);
+            return false;
+        }
+    }
+
+    async deleteAllProductsFromCart(cid) {
+        try {
+            let result = await cartModel.updateMany(
+                { _id: cid },
+                { $set: { products: [] } }
+            );
+            return result;
         } catch (err) {
             console.log("Cannot get cart: ", err);
             return false;
