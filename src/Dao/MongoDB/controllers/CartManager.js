@@ -31,14 +31,16 @@ export default class CartManager {
     async addProductToCart(cid, pid) {
         try {
             let cart = await cartModel.findOne({ _id: cid }).lean();
-            console.log(cart);
-            if (cart.products.some((item) => item.product.toString() === pid)) {
+            if (
+                cart.products.some(
+                    (item) => item.product._id.toString() === pid
+                )
+            ) {
                 let currProd = cart.products.find(
-                    (item) => item.product.toString() === pid
+                    (item) => item.product._id.toString() === pid
                 );
                 let quantity = currProd.quantity;
                 quantity += 1;
-                console.log(quantity);
                 let result = await cartModel.updateOne(
                     { _id: cid, "products.product": pid },
                     {

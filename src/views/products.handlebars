@@ -10,6 +10,11 @@
             <li><strong>Price:</strong> {{this.price}}</li>
             <li><strong>Stock:</strong> {{this.stock}}</li>
             <li><strong>Code:</strong> {{this.code}}</li>
+            <button
+                style="max-width: fit-content;"
+                class="btn btn-primary"
+                onclick="addProductToCart({{json this._id}})"
+            >Agregar al carrito</button>
         </ul>
     {{/each}}
     {{#if prevLink}}
@@ -27,3 +32,4 @@
         <a href={{nextLink}}>Siguiente</a>
     {{/if}}
 </div>
+<script src="/js/addProductToCart.js"></script>

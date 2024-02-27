@@ -35,28 +35,14 @@ export default class ProductManager {
     }
 
     validateParams(limit, page, query, sort, lean) {
-        // let finalQuery = [];
-        // if (Boolean(query)) {
-        //     finalQuery.push({ $match: { category: query } });
-        // }
-        // if (Boolean(sort)) {
-        //     finalQuery.push({
-        //         $sort: { price: sort === "asc" ? 1 : -1 },
-        //     });
-        // }
-        // finalQuery.push({
-        //     $limit: limit ? parseInt(limit) : 10,
-        // });
         let filter = {};
         if (Boolean(query)) {
             if (query !== "status-true" && query !== "status-false") {
-                console.log("la concha de tu mdare");
                 filter.category = query;
             } else {
                 filter.status = query === "status-true" ? true : false;
             }
         }
-        console.log(filter);
         let finalQuery = {};
         if (Boolean(sort)) {
             finalQuery.sort = { price: sort === "asc" ? 1 : -1 };
@@ -66,7 +52,6 @@ export default class ProductManager {
         if (lean) {
             finalQuery.lean = true;
         }
-        console.log(finalQuery);
         return { finalQuery, filter };
     }
 

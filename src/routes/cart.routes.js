@@ -41,7 +41,6 @@ routerCart.put("/:cid/product/:pid", async (req, res) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     let result = await cartManager.updateProductFromCart(cid, pid, quantity);
-    console.log(result);
     if (!result || result.matchedCount === 0)
         return res.status(404).send({ status: "error" });
     res.status(201).send({ status: "success", payload: result });
