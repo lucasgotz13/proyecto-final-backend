@@ -1,4 +1,17 @@
-<h1 style="border-bottom: 2px solid black; text-align: center;">PRODUCTOS</h1>
+<div style="padding: 5px; border-bottom: 2px solid black;">
+    <h4>Bienvenido
+        <br />
+        <u>Usuario:</u>
+        {{email}}
+        <br />
+        <u>Rol:</u>
+        <span style="color: red;">[{{role}}]</span>
+    </h4>
+    <a href="/auth/logout" class="btn btn-secondary">LOGOUT</a>
+</div>
+<h1
+    style="border-bottom: 2px solid black; text-align: center; font-weight: bold;"
+>PRODUCTOS</h1>
 <div>
     {{#each PRODUCTS}}
         <ul
@@ -11,24 +24,16 @@
             <li><strong>Stock:</strong> {{this.stock}}</li>
             <li><strong>Code:</strong> {{this.code}}</li>
             <button
-                style="max-width: fit-content;"
+                style="max-width: fit-content; margin-bottom: 5px;"
                 class="btn btn-primary"
                 onclick="addProductToCart({{json this._id}})"
             >Agregar al carrito</button>
         </ul>
     {{/each}}
     {{#if prevLink}}
-        {{!-- <button
-            onclick="location.href='{{prevLink}}'"
-            type="button"
-        >Anterior</button> --}}
         <a href={{prevLink}}>Anterior</a>
     {{/if}}
     {{#if nextLink}}
-        {{!-- <button
-            onclick="location.href='{{nextLink}}'"
-            type="button"
-        >Siguiente</button> --}}
         <a href={{nextLink}}>Siguiente</a>
     {{/if}}
 </div>
