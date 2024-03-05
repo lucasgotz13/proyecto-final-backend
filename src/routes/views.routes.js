@@ -7,6 +7,10 @@ const cartManager = new CartManager();
 
 const routerViews = Router();
 
+routerViews.get("/", (req, res) => {
+    res.redirect("/login");
+});
+
 routerViews.get("/chat", async (req, res) => {
     res.render("chat", {});
 });
@@ -40,7 +44,11 @@ routerViews.get("/products", async (req, res) => {
     }
     const PRODUCTS = result.docs;
     const { prevLink, nextLink } = result;
-    res.render("products", { PRODUCTS, prevLink, nextLink });
+    const { email, role } = req.session;
+
+    if (!req.session.email && !req.session.password)
+        return res.redirect("/login");
+    res.render("products", { PRODUCTS, prevLink, nextLink, email, role });
 });
 
 routerViews.get("/carts/:cid", async (req, res) => {
@@ -48,5 +56,19 @@ routerViews.get("/carts/:cid", async (req, res) => {
     let cart = await cartManager.getCart(cid);
     res.render("cart", { cart });
 });
+
+routerViews.get("/register", (req, res) => {
+    res.render("register");
+});
+
+routerViews.get("/login", (req, res) => {
+    res.render("login");
+});
+
+// routerViews.get("/profile", (req, res) => {
+//     if (!req.session.user && !req.session.password)
+//         return res.redirect("/login");
+//     res.render("products");
+// });
 
 export default routerViews;
