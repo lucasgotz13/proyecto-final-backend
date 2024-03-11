@@ -13,6 +13,8 @@ import { messageModel } from "./Dao/MongoDB/models/messages.model.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 
 const PORT = 8080;
 const app = express();
@@ -35,16 +37,19 @@ app.set("view engine", "handlebars");
 
 app.use(
     session({
-        store: MongoStore.create({
-            mongoUrl:
-                "mongodb+srv://lucasgotz13:32CbzpWntktJeuPm@proyecto-backend.jd7f7cm.mongodb.net/ecommerce",
-            mongoOptions: {},
-        }),
+        // store: MongoStore.create({
+        //     mongoUrl:
+        //         "mongodb+srv://lucasgotz13:32CbzpWntktJeuPm@proyecto-backend.jd7f7cm.mongodb.net/ecommerce",
+        //     mongoOptions: {},
+        // }),
         secret: "secretCoder",
-        resave: false,
-        saveUninitialized: false,
+        resave: true,
+        saveUninitialized: true,
     })
 );
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/products", routerProd);
 app.use("/api/carts", routerCart);

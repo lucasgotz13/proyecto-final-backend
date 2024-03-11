@@ -1,39 +1,47 @@
 import { Router } from "express";
-import { userModel } from "../Dao/MongoDB/models/users.model.js";
+import passport from "passport";
 
 export const routerAuth = new Router();
 
-routerAuth.post("/register", async (req, res) => {
-    let userNew = req.body;
-    await userModel.create(userNew);
+routerAuth.post(
+    "/register",
+    passport.authenticate("register", {
+        failureRedirect: "/auth/failregister",
+    }),
+    async (req, res) => {
+        console.log("User registered");
 
-    res.redirect("/login");
+        res.redirect("/login");
+    }
+);
+
+routerAuth.get("/failregister", async (req, res) => {
+    console.log("Failed strategy");
+    res.send({ error: "Failed" });
 });
 
-routerAuth.post("/login", async (req, res) => {
-    let userNew = req.body;
-    let users = await userModel.find().lean();
-    let userFound = users.find(
-        (user) =>
-            user.email === userNew.email && user.password === userNew.password
-    );
-    if (
-        userNew.email === "adminCoder@coder.com" &&
-        userNew.password === "adminCod3r123"
-    ) {
-        userFound.role = "ADMIN";
-    } else {
-        userFound.role = "USUARIO";
-    }
-
-    if (userFound) {
-        req.session.user = userFound;
-
+routerAuth.post(
+    "/login",
+    passport.authenticate("login", { failureRedirect: "/auth/faillogin" }),
+    async (req, res) => {
+        if (!req.user)
+            return res
+                .status(400)
+                .send({ status: "error", error: "Invalid credentials" });
+        req.session.user = {
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            age: req.user.age,
+            email: req.user.email,
+            role:
+                req.user.email == "adminCoder@coder.com" ? "ADMIN" : "USUARIO",
+        };
         res.redirect("/products");
-        return;
     }
+);
 
-    res.status(404).send("Email or password are incorrect");
+routerAuth.get("/faillogin", (req, res) => {
+    res.send({ error: "Failed login" });
 });
 
 routerAuth.get("/logout", (req, res) => {
