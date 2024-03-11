@@ -12,24 +12,22 @@ routerAuth.post("/register", async (req, res) => {
 
 routerAuth.post("/login", async (req, res) => {
     let userNew = req.body;
-    if (
-        userNew.email === "adminCoder@coder.com" &&
-        userNew.password === "adminCod3r123"
-    ) {
-        userNew.role = "ADMIN";
-    } else {
-        userNew.role = "USUARIO";
-    }
     let users = await userModel.find().lean();
     let userFound = users.find(
         (user) =>
             user.email === userNew.email && user.password === userNew.password
     );
+    if (
+        userNew.email === "adminCoder@coder.com" &&
+        userNew.password === "adminCod3r123"
+    ) {
+        userFound.role = "ADMIN";
+    } else {
+        userFound.role = "USUARIO";
+    }
 
     if (userFound) {
-        req.session.email = userNew.email;
-        req.session.password = userNew.password;
-        req.session.role = userNew.role;
+        req.session.user = userFound;
 
         res.redirect("/products");
         return;

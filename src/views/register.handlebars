@@ -1,10 +1,20 @@
-<div>
+<div style="padding: 20px;">
     <h1>REGISTER</h1>
-    <form action="/auth/register" method="post">
+    <form
+        action="/auth/register"
+        method="post"
+        style="display: flex; flex-direction: column; max-width: fit-content; gap: 5px;"
+    >
+        <label for="">First name:</label>
+        <input type="text" name="first_name" />
+        <label for="">Last name:</label>
+        <input type="text" name="last_name" />
         <label for="">Email:</label>
         <input type="email" name="email" />
+        <label for="">Age:</label>
+        <input type="number" name="age" />
         <label for="">Password:</label>
         <input type="password" name="password" />
-        <input type="submit" value="Enviar" />
+        <input type="submit" value="Enviar" class="btn btn-primary" />
     </form>
 </div>
