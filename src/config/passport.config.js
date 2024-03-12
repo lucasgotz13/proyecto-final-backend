@@ -2,6 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import { userModel } from "../Dao/MongoDB/models/users.model.js";
 import { createHash, isValidPassword } from "../path.js";
+import GithubStrategy from "passport-github2";
 
 const LocalStrategy = local.Strategy;
 const initializePassport = () => {
@@ -46,6 +47,38 @@ const initializePassport = () => {
                     if (!isValidPassword(user, password))
                         return done(null, false);
                     return done(null, user);
+                } catch (err) {
+                    return done(err);
+                }
+            }
+        )
+    );
+    passport.use(
+        "github",
+        new GithubStrategy(
+            {
+                clientID: "Iv1.83e5d333de2c6d5d",
+                clientSecret: "c51c6055a7d58cdba482570f6136e956d1ee1604",
+                callbackUrl: "http://localhost:8080/api/auth/githubcallback",
+            },
+            async (accessToken, refreshToken, profile, done) => {
+                try {
+                    console.log(profile);
+                    let user = await userModel.findOne({
+                        email: profile._json.email,
+                    });
+                    if (!user) {
+                        let newUser = {
+                            first_name: profile._json.name,
+                            last_name: "",
+                            age: 18,
+                            email: profile._json.email,
+                        };
+                        let result = await userModel.create(newUser);
+                        done(null, result);
+                    } else {
+                        done(null, user);
+                    }
                 } catch (err) {
                     return done(err);
                 }
