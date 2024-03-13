@@ -44,11 +44,20 @@ routerViews.get("/products", async (req, res) => {
     }
     const PRODUCTS = result.docs;
     const { prevLink, nextLink } = result;
-    const { email, role } = req.session;
+    if (req.session.user === undefined) return res.redirect("/login");
+    console.log(req.session.user);
+    const { first_name, last_name, email, age, role } = req.session.user;
 
-    if (!req.session.email && !req.session.password)
-        return res.redirect("/login");
-    res.render("products", { PRODUCTS, prevLink, nextLink, email, role });
+    res.render("products", {
+        PRODUCTS,
+        prevLink,
+        nextLink,
+        first_name,
+        last_name,
+        email,
+        age,
+        role,
+    });
 });
 
 routerViews.get("/carts/:cid", async (req, res) => {
