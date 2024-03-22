@@ -22,6 +22,7 @@ export default class UserManager {
     async getUserById(id) {
         try {
             let result = userModel.findById(id);
+            return result;
         } catch (error) {
             console.log("An error has occured when fetching the user");
         }
