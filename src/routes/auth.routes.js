@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import { sessionModel } from "../Dao/MongoDB/models/sessions.model.js";
 
 export const routerAuth = new Router();
 
@@ -51,6 +52,7 @@ routerAuth.post(
             role:
                 req.user.email == "adminCoder@coder.com" ? "ADMIN" : "USUARIO",
         };
+        console.log(req.session);
         res.redirect("/products");
     }
 );
@@ -65,6 +67,11 @@ routerAuth.get("/logout", (req, res) => {
     });
 
     res.redirect("/login");
+});
+
+routerAuth.get("/current", async (req, res) => {
+    let result = await sessionModel.find();
+    res.send({ session: result });
 });
 
 routerAuth.get("/user", (req, res) => {

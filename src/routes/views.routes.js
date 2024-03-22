@@ -45,7 +45,6 @@ routerViews.get("/products", async (req, res) => {
     const PRODUCTS = result.docs;
     const { prevLink, nextLink } = result;
     if (req.session.user === undefined) return res.redirect("/login");
-    console.log(req.session.user);
     const { first_name, last_name, email, age, role } = req.session.user;
 
     res.render("products", {

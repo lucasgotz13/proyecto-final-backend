@@ -37,14 +37,14 @@ app.set("view engine", "handlebars");
 
 app.use(
     session({
-        // store: MongoStore.create({
-        //     mongoUrl:
-        //         "mongodb+srv://lucasgotz13:32CbzpWntktJeuPm@proyecto-backend.jd7f7cm.mongodb.net/ecommerce",
-        //     mongoOptions: {},
-        // }),
+        store: MongoStore.create({
+            mongoUrl:
+                "mongodb+srv://lucasgotz13:32CbzpWntktJeuPm@proyecto-backend.jd7f7cm.mongodb.net/ecommerce",
+            mongoOptions: {},
+        }),
         secret: "secretCoder",
-        resave: true,
-        saveUninitialized: true,
+        resave: false,
+        saveUninitialized: false,
     })
 );
 initializePassport();
