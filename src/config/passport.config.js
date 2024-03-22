@@ -3,27 +3,35 @@ import local from "passport-local";
 import { userModel } from "../Dao/MongoDB/models/users.model.js";
 import { createHash, isValidPassword } from "../path.js";
 import GithubStrategy from "passport-github2";
+import CartManager from "../Dao/MongoDB/controllers/CartManager.js";
+
+const cartManager = new CartManager();
+
+// result._id
 
 const LocalStrategy = local.Strategy;
-const initializePassport = () => {
+const initializePassport = async () => {
     passport.use(
         "register",
         new LocalStrategy(
             { passReqToCallback: true, usernameField: "email" },
             async (req, username, password, done) => {
-                const { first_name, last_name, email, age } = req.body;
+                const { first_name, last_name, email, age, role } = req.body;
                 try {
                     let user = await userModel.findOne({ email: username });
                     if (user) {
                         console.log("User already exists");
                         return done(null, false);
                     }
+                    let cart = await cartManager.createCart([]);
                     const newUser = {
                         first_name,
                         last_name,
                         email,
                         age,
                         password: createHash(password),
+                        cart: cart._id,
+                        role: "user",
                     };
                     let result = await userModel.create(newUser);
                     return done(null, result);
@@ -40,6 +48,7 @@ const initializePassport = () => {
             async (username, password, done) => {
                 try {
                     const user = await userModel.findOne({ email: username });
+                    console.log(user);
                     if (!user) {
                         console.log("User doesn't exist");
                         return done(null, false);
@@ -68,11 +77,14 @@ const initializePassport = () => {
                         email: profile._json.email,
                     });
                     if (!user) {
+                        let cart = await cartManager.createCart([]);
                         let newUser = {
                             first_name: profile._json.name,
                             last_name: "",
                             age: 18,
                             email: profile._json.email,
+                            cart: cart._id,
+                            role: "user",
                         };
                         let result = await userModel.create(newUser);
                         done(null, result);

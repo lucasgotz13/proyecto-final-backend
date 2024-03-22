@@ -11,11 +11,19 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        unique: true,
     },
     age: {
         type: String,
     },
     password: {
+        type: String,
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts",
+    },
+    role: {
         type: String,
     },
 });
