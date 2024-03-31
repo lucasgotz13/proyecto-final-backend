@@ -15,8 +15,8 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
+import config from "./config/config.js";
 
-const PORT = 8080;
 const app = express();
 
 const server = http.createServer(app);
@@ -38,8 +38,7 @@ app.set("view engine", "handlebars");
 app.use(
     session({
         store: MongoStore.create({
-            mongoUrl:
-                "mongodb+srv://lucasgotz13:32CbzpWntktJeuPm@proyecto-backend.jd7f7cm.mongodb.net/ecommerce",
+            mongoUrl: process.env.MONGO_URL,
             mongoOptions: {},
         }),
         secret: "secretCoder",
@@ -62,9 +61,7 @@ app.use(cookieParser("CoderSecretCode"));
 app.use(express.static(__dirname + "/public"));
 
 mongoose
-    .connect(
-        "mongodb+srv://lucasgotz13:32CbzpWntktJeuPm@proyecto-backend.jd7f7cm.mongodb.net/ecommerce"
-    )
+    .connect(process.env.MONGO_URL)
     .then(() => console.log("Base de datos conecatda"));
 
 const io = new Server(server);
@@ -85,6 +82,6 @@ io.on("connection", async (socket) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log("Server on port", PORT);
+server.listen(process.env.PORT, () => {
+    console.log("Server on port", process.env.PORT);
 });
