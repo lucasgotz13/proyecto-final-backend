@@ -1,5 +1,5 @@
 import { Router } from "express";
-import MessagesManager from "../Dao/MongoDB/controllers/MessageManager.js";
+import MessagesManager from "../services/MessageManager.js";
 
 const routerMessages = Router();
 const messagesManager = new MessagesManager();

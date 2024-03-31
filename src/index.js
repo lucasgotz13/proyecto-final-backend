@@ -9,7 +9,7 @@ import handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import http from "http";
 import { Server } from "socket.io";
-import { messageModel } from "./Dao/MongoDB/models/messages.model.js";
+import { messageModel } from "./models/messages.model.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
