@@ -2,8 +2,8 @@ import passport from "passport";
 import local from "passport-local";
 import { createHash, isValidPassword } from "../path.js";
 import GithubStrategy from "passport-github2";
-import CartManager from "../Dao/MongoDB/controllers/CartManager.js";
-import UserManager from "../Dao/MongoDB/controllers/UserManager.js";
+import CartManager from "../services/CartManager.js";
+import UserManager from "../services/UserManager.js";
 
 const cartManager = new CartManager();
 const userManager = new UserManager();

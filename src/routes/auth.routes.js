@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { sessionModel } from "../Dao/MongoDB/models/sessions.model.js";
+import { sessionModel } from "../models/sessions.model.js";
 
 export const routerAuth = new Router();
 
