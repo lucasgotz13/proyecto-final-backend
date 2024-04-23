@@ -2,11 +2,8 @@ import passport from "passport";
 import local from "passport-local";
 import { createHash, isValidPassword } from "../path.js";
 import GithubStrategy from "passport-github2";
-import CartManager from "../services/CartManager.js";
-import UserManager from "../services/UserManager.js";
-
-const cartManager = new CartManager();
-const userManager = new UserManager();
+import { cartService } from "../Dao/MongoDB/repositories/index.js";
+import { userService } from "../Dao/MongoDB/repositories/index.js";
 
 const LocalStrategy = local.Strategy;
 const initializePassport = async () => {
@@ -17,12 +14,12 @@ const initializePassport = async () => {
             async (req, username, password, done) => {
                 const { first_name, last_name, email, age } = req.body;
                 try {
-                    let user = await userManager.getUser(username);
+                    let user = await userService.getUser(username);
                     if (user) {
                         console.log("User already exists");
                         return done(null, false);
                     }
-                    let cart = await cartManager.createCart([]);
+                    let cart = await cartService.createCart([]);
                     const newUser = {
                         first_name,
                         last_name,
@@ -32,7 +29,7 @@ const initializePassport = async () => {
                         cart: cart._id,
                         role: "user",
                     };
-                    let result = await userManager.createUser(newUser);
+                    let result = await userService.createUser(newUser);
                     return done(null, result);
                 } catch (err) {
                     return done("Error al obtener el usuario: " + err);
@@ -46,7 +43,7 @@ const initializePassport = async () => {
             { usernameField: "email" },
             async (username, password, done) => {
                 try {
-                    const user = await userManager.getUser(username);
+                    const user = await userService.getUser(username);
                     console.log(user);
                     if (!user) {
                         console.log("User doesn't exist");
@@ -72,9 +69,9 @@ const initializePassport = async () => {
             async (accessToken, refreshToken, profile, done) => {
                 try {
                     console.log(profile);
-                    let user = await userManager.getUser(profile._json.email);
+                    let user = await userService.getUser(profile._json.email);
                     if (!user) {
-                        let cart = await cartManager.createCart([]);
+                        let cart = await cartService.createCart([]);
                         let newUser = {
                             first_name: profile._json.name,
                             last_name: "",
@@ -83,7 +80,7 @@ const initializePassport = async () => {
                             cart: cart._id,
                             role: "user",
                         };
-                        let result = await userManager.createUser(newUser);
+                        let result = await userService.createUser(newUser);
                         done(null, result);
                     } else {
                         done(null, user);
@@ -99,7 +96,7 @@ const initializePassport = async () => {
         done(null, user._id);
     });
     passport.deserializeUser(async (id, done) => {
-        let user = await userManager.getUserById(id);
+        let user = await userService.getUserById(id);
         done(null, user);
     });
 };
