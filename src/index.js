@@ -18,6 +18,7 @@ import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import config from "./config/config.js";
 import "dotenv/config";
+import { adminMiddleware } from "./middleware/middleware.js";
 
 console.log(process.env.PORT);
 
@@ -56,7 +57,7 @@ app.use(passport.session());
 
 app.use("/api/products", routerProd);
 app.use("/api/carts", routerCart);
-app.use("/api/messages", routerMessages);
+app.use("/api/messages", adminMiddleware, routerMessages);
 app.use("/auth", routerAuth);
 app.use("/user", routerUser);
 app.use("/", routerViews);
