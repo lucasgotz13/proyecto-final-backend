@@ -1,4 +1,4 @@
-import { userModel } from "../models/users.model.js";
+import { userModel } from "../../../models/users.model.js";
 
 export default class UserManager {
     async createUser(user) {
@@ -25,6 +25,16 @@ export default class UserManager {
             return result;
         } catch (error) {
             console.log("An error has occured when fetching the user");
+        }
+    }
+
+    async getUserByCartId(cid) {
+        try {
+            let result = userModel.findOne({ cart: cid });
+            return result;
+        } catch (error) {
+            console.log("An error has occured when fetching the user");
+            return false;
         }
     }
 }

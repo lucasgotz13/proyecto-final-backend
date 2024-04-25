@@ -1,6 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import { sessionModel } from "../models/sessions.model.js";
 
 export const routerAuth = new Router();
 
@@ -70,8 +69,7 @@ routerAuth.get("/logout", (req, res) => {
 });
 
 routerAuth.get("/current", async (req, res) => {
-    let result = await sessionModel.find();
-    res.send({ session: result });
+    res.send({ user: req.session.user });
 });
 
 routerAuth.get("/user", (req, res) => {

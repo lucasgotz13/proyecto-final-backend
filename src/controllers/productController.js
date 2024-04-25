@@ -1,10 +1,8 @@
-import ProductManager from "../services/ProductManager.js";
-
-const productManager = new ProductManager();
+import { productService } from "../Dao/MongoDB/repositories/index.js";
 
 export const getProducts = async (req, res) => {
     const { limit, page, query, sort } = req.query;
-    let result = await productManager.getProducts(limit, page, query, sort);
+    let result = await productService.getProducts(limit, page, query, sort);
     if (result.hasPrevPage) {
         result.prevLink = `http://localhost:8080/api/products${
             limit ? `?limit=${limit}` : `?limit=10`
@@ -34,7 +32,7 @@ export const getProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
     const { pid } = req.params;
-    let result = await productManager.getProductById(pid);
+    let result = await productService.getProductById(pid);
     if (!result) return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
 };
@@ -50,7 +48,7 @@ export const addProduct = async (req, res) => {
         status,
         stock,
     } = req.body;
-    let result = await productManager.addProduct({
+    let result = await productService.addProduct({
         title,
         description,
         category,
@@ -72,14 +70,14 @@ export const updateProduct = async (req, res) => {
     const { pid } = req.params;
     let fieldsToReplace = req.body;
 
-    let result = await productManager.updateProduct(pid, fieldsToReplace);
+    let result = await productService.updateProduct(pid, fieldsToReplace);
     if (!result) return res.status(404).send({ status: "error" });
     res.status(201).send({ status: "success", payload: result });
 };
 
 export const deleteProduct = async (req, res) => {
     const { pid } = req.params;
-    let result = await productManager.deleteProduct(pid);
+    let result = await productService.deleteProduct(pid);
     if (!result) return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
 };

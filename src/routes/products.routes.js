@@ -6,13 +6,14 @@ import {
     getProducts,
     updateProduct,
 } from "../controllers/productController.js";
+import { adminMiddleware, userMiddleware } from "../middleware/middleware.js";
 
 const routerProd = Router();
 
 routerProd.get("/", getProducts);
 routerProd.get("/:pid", getProductById);
-routerProd.post("/", addProduct);
+routerProd.post("/", userMiddleware, addProduct);
 routerProd.put("/:pid", updateProduct);
-routerProd.delete("/:pid", deleteProduct);
+routerProd.delete("/:pid", userMiddleware, deleteProduct);
 
 export default routerProd;

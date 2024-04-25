@@ -1,12 +1,9 @@
-import CartManager from "../services/CartManager.js";
-import ProductManager from "../services/ProductManager.js";
-
-const productManager = new ProductManager();
-const cartManager = new CartManager();
+import { cartService } from "../Dao/MongoDB/repositories/index.js";
+import { productService } from "../Dao/MongoDB/repositories/index.js";
 
 export const renderProductsView = async (req, res) => {
     const { limit, page, query, sort } = req.query;
-    let result = await productManager.getProducts(
+    let result = await productService.getProducts(
         limit,
         page,
         query,
@@ -50,6 +47,6 @@ export const renderProductsView = async (req, res) => {
 
 export const renderCartView = async (req, res) => {
     const { cid } = req.params;
-    let cart = await cartManager.getCart(cid);
+    let cart = await cartService.getCart(cid);
     res.render("cart", { cart });
 };

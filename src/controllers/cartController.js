@@ -1,10 +1,8 @@
-import CartManager from "../services/CartManager.js";
-
-const cartManager = new CartManager();
+import { cartService } from "../Dao/MongoDB/repositories/index.js";
 
 export const getCart = async (req, res) => {
     const { cid } = req.params;
-    let result = await cartManager.getCart(cid);
+    let result = await cartService.getCart(cid);
     if (!result)
         return res
             .status(404)
@@ -14,14 +12,14 @@ export const getCart = async (req, res) => {
 
 export const addCart = async (req, res) => {
     let { products } = req.body;
-    let result = await cartManager.createCart(products ?? []);
+    let result = await cartService.createCart(products ?? []);
     if (!result) return res.status(404).send({ status: "error" });
     res.status(201).send({ status: "success", payload: result });
 };
 
 export const addProductToCart = async (req, res) => {
     const { cid, pid } = req.params;
-    let result = await cartManager.addProductToCart(cid, pid);
+    let result = await cartService.addProductToCart(cid, pid);
     if (!result) return res.status(404).send({ status: "error" });
     res.status(201).send({ status: "success", payload: result });
 };
@@ -29,7 +27,7 @@ export const addProductToCart = async (req, res) => {
 export const updateCart = async (req, res) => {
     const { cid } = req.params;
     const { products } = req.body;
-    let result = await cartManager.updateCart(cid, products);
+    let result = await cartService.updateCart(cid, products);
     if (!result || result.matchedCount === 0)
         return res.status(404).send({ status: "error" });
     res.status(201).send({ status: "success", payload: result });
@@ -38,7 +36,7 @@ export const updateCart = async (req, res) => {
 export const updateProductFromCart = async (req, res) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
-    let result = await cartManager.updateProductFromCart(cid, pid, quantity);
+    let result = await cartService.updateProductFromCart(cid, pid, quantity);
     if (!result || result.matchedCount === 0)
         return res.status(404).send({ status: "error" });
     res.status(201).send({ status: "success", payload: result });
@@ -46,7 +44,7 @@ export const updateProductFromCart = async (req, res) => {
 
 export const deleteProductFromCart = async (req, res) => {
     const { cid, pid } = req.params;
-    let result = await cartManager.deleteProductFromCart(cid, pid);
+    let result = await cartService.deleteProductFromCart(cid, pid);
     if (!result || result.matchedCount === 0)
         return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
@@ -54,8 +52,20 @@ export const deleteProductFromCart = async (req, res) => {
 
 export const deleteCart = async (req, res) => {
     const { cid } = req.params;
-    let result = await cartManager.deleteAllProductsFromCart(cid);
+    let result = await cartService.deleteAllProductsFromCart(cid);
     if (!result || result.matchedCount === 0)
         return res.status(404).send({ status: "error" });
+    res.status(200).send({ status: "success", payload: result });
+};
+
+export const finishPurchase = async (req, res) => {
+    const { cid } = req.params;
+    let result = await cartService.finishPurchase(cid);
+    if (!result || result.matchedCount === 0)
+        return res.status(404).send({ status: "error" });
+    let cart = await cartService.getCart(cid);
+    if (cart.length > 0) {
+        return res.status(200).send({ status: "success", result: cart });
+    }
     res.status(200).send({ status: "success", payload: result });
 };

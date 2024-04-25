@@ -3,6 +3,7 @@ import {
     renderCartView,
     renderProductsView,
 } from "../controllers/viewsController.js";
+import { adminMiddleware } from "../middleware/middleware.js";
 
 const routerViews = Router();
 
@@ -10,7 +11,7 @@ routerViews.get("/", (req, res) => {
     res.redirect("/login");
 });
 
-routerViews.get("/chat", async (req, res) => {
+routerViews.get("/chat", adminMiddleware, async (req, res) => {
     res.render("chat", {});
 });
 
