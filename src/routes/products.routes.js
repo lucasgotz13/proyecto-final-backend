@@ -13,7 +13,7 @@ const routerProd = Router();
 routerProd.get("/", getProducts);
 routerProd.get("/:pid", getProductById);
 routerProd.post("/", userMiddleware, addProduct);
-routerProd.put("/:pid", userMiddleware, updateProduct);
+routerProd.put("/:pid", updateProduct);
 routerProd.delete("/:pid", userMiddleware, deleteProduct);
 
 export default routerProd;

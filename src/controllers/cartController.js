@@ -57,3 +57,15 @@ export const deleteCart = async (req, res) => {
         return res.status(404).send({ status: "error" });
     res.status(200).send({ status: "success", payload: result });
 };
+
+export const finishPurchase = async (req, res) => {
+    const { cid } = req.params;
+    let result = await cartService.finishPurchase(cid);
+    if (!result || result.matchedCount === 0)
+        return res.status(404).send({ status: "error" });
+    let cart = await cartService.getCart(cid);
+    if (cart.length > 0) {
+        return res.status(200).send({ status: "success", result: cart });
+    }
+    res.status(200).send({ status: "success", payload: result });
+};

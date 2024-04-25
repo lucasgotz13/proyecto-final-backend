@@ -1,4 +1,5 @@
 import { cartModel } from "../../../models/carts.model.js";
+import { productService, ticketService } from "./index.js";
 
 export default class CartManager {
     constructor(path) {
@@ -59,6 +60,34 @@ export default class CartManager {
             }
         } catch (err) {
             console.log("Cannot get cart: ", err);
+            return false;
+        }
+    }
+
+    async finishPurchase(cid) {
+        try {
+            let cart = await this.getCart(cid);
+            if (!cart) {
+                return false;
+            }
+            const products = [];
+            for (let product of cart) {
+                let { stock } = await productService.getProductById(
+                    product.product._id
+                );
+                if (stock > product.quantity) {
+                    products.push(product);
+                    stock -= product.quantity;
+                    await productService.updateProduct(product.product._id, {
+                        stock,
+                    });
+                    await this.deleteProductFromCart(cid, product.product._id);
+                }
+            }
+            const result = await ticketService.generateTicket(cid, products);
+            return result;
+        } catch (error) {
+            console.log(error);
             return false;
         }
     }

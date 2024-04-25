@@ -4,6 +4,7 @@ import {
     addProductToCart,
     deleteCart,
     deleteProductFromCart,
+    finishPurchase,
     getCart,
     updateCart,
     updateProductFromCart,
@@ -14,6 +15,7 @@ const routerCart = Router();
 routerCart.get("/:cid", getCart);
 routerCart.post("/", addCart);
 routerCart.post("/:cid/product/:pid", addProductToCart);
+routerCart.post("/:cid/purchase", finishPurchase);
 routerCart.put("/:cid", updateCart);
 routerCart.put("/:cid/product/:pid", updateProductFromCart);
 routerCart.delete("/:cid/product/:pid", deleteProductFromCart);
